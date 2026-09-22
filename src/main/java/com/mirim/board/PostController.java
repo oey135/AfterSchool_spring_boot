@@ -28,10 +28,10 @@ public class PostController {
     @GetMapping
     public ResponseEntity<?> getPosts(@RequestParam(required = false) String keyword) {
         if(keyword != null) {
-            List<Map<String, Object>> posts = postService.searchPosts(keyword);
+            List<Post> posts = postService.searchPosts(keyword);
             return ResponseEntity.ok(posts);
         }
-        List<Map<String, Object>> posts = postService.getAllPosts();
+        List<Post> posts = postService.getAllPosts();
         return ResponseEntity.ok(posts);
     }
 
@@ -44,7 +44,7 @@ public class PostController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("게시글 번호는 1이상이어야 합니다.");
         }
 
-        Map<String, Object> post = postService.getPost(id);
+        Post post = postService.getPost(id);
         if(post == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 게시물입니다.");
         }
@@ -65,7 +65,7 @@ public class PostController {
         String title = (String) request.get("title");
         String content = (String) request.get("content");
 
-        Map<String, Object> response = postService.createPost(title, content);
+        Post response = postService.createPost(title, content);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -80,7 +80,7 @@ public class PostController {
         String title = (String) request.get("title");
         String content = (String) request.get("content");
 
-        Map<String, Object> response = postService.updatePost(id, title, content);
+        Post response = postService.updatePost(id, title, content);
         if (response == null) {
             ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 게시글입니다.");
         }
