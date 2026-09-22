@@ -2,8 +2,12 @@ package com.mirim.board.repository;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +20,7 @@ public class PostRepository {
     private final List<Map<String, Object>> posts = new ArrayList<>();
     private Long nextId = 1L;
 
-    // 뭐시기
+    // 로우 맵퍼로 하나하나 변형
     private final RowMapper<Map<String, Object>> postRowMapper = (rs, rowNum) -> {
         Map<String, Object> post = new HashMap<>();
         post.put("id", rs.getLong("id"));
@@ -30,8 +34,17 @@ public class PostRepository {
     }
 
     public Map<String, Object> save(Map<String, Object> post) {
-        post.put("id", nextId++);
-        posts.add(post);
+        String sql = "INSERT INTO posts (title, content) VALUES (?, ?)";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, (String) post.get("title"));
+            ps.setString(2, (String) post.get("content"));
+            return ps;
+        }, keyHolder);
+
+        post.put("id", keyHolder.getKey().longValue());
         return post;
     }
 
@@ -42,7 +55,7 @@ public class PostRepository {
     public List<Map<String, Object>> findAll() {
         String sql = "select * from posts";
         jdbcTemplate.query(sql, postRowMapper);
-        return posts;
+        return jdbcTemplate.query(sql, postRowMapper);
     }
 
     public boolean deleteById(Long id) {
