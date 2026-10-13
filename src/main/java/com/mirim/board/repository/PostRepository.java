@@ -13,6 +13,13 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     // 하나 남은 메소드 - 키워드로 제목 검색하기 <- 기본적으로 생성 ㄴㄴ
     // Jpa는 쿼리 메소드를 지원 : 쿼리를 나열해 메소드를 만들면 해당 기능을 제공! 그래서 이름 틀리면 안됨
 
-    // 오타 주의
+    // 오타 주의 : 잘못된 쿼리 메소드는 서버 실행 X - 쿼리를 서버 실행 시 만들기 때문에
+    // 키워드를 잘 매칭해 쓰면 JAP가 알아서 만들어 써줌
+
+    // findBy(찾아라!) + Title(field aud) + Containing(like %%)
+    // select * from posts where title ='';
+    // List<Post> findByTitle(String keyword);
+
+    // select * from posts where title like '%Title%';
     List<Post> findByTitleContaining(String keyword);
 }
