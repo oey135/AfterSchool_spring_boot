@@ -3,6 +3,7 @@ package com.mirim.board;
 import com.mirim.board.dto.PostRequest;
 import com.mirim.board.dto.PostResponse;
 import com.mirim.board.service.PostService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -47,9 +48,7 @@ public class PostController {
         }
 
         PostResponse post = postService.getPost(id);
-        if(post == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 게시물입니다.");
-        }
+
         return ResponseEntity.ok(post);
     }
 
@@ -62,7 +61,7 @@ public class PostController {
     // @RequesBody : 요청 데이터 받아오기
     // createPost()처럼 무언가를 생성하는 코드의 경우, 201(created)로 응답받는 것이 좀 더 직관적
     @PostMapping// 브라우저에서는 get이외의 요청이 불가ㅜ
-    public ResponseEntity<?> createPost(@RequestBody PostRequest request) {
+    public ResponseEntity<?> createPost(@Valid @RequestBody PostRequest request) {
         // Map은 논리적 오류를 잡기 힘들어서 실무에서는 클래스로 만들어 사용 -> 그렇기에 프론트와 협업하기 위해 API문서화가 필요한 것
         // 필수 키를 검사하지 않고 있음
         String title = request.getTitle();
@@ -75,7 +74,7 @@ public class PostController {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updatePosts(@PathVariable long id, @RequestBody PostRequest request) {
+    public ResponseEntity<?> updatePosts(@PathVariable long id, @Valid @RequestBody PostRequest request) {
         if(id <= 0) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("게시물 번호는 1 이상이여야 합니다.");
         }
@@ -84,9 +83,7 @@ public class PostController {
         String content = request.getContent();
 
         PostResponse response = postService.updatePost(id, title, content);
-        if (response == null) {
-            ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 게시글입니다.");
-        }
+
         return ResponseEntity.status(HttpStatus.OK).body(response);
 
     }
