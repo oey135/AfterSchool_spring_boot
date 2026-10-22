@@ -16,6 +16,10 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY) // DB에서 알아서 만들어주는 값을 표현, auto_increment설정 했으니까
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY) //JPA는 어노테이션으로 연관관계를 매핑가능
+    @JoinColumn(name = "author_id", nullable = false)
+    private Member author;
+
     @Column(nullable = false, length = 200)
     private String title;
 
@@ -27,6 +31,8 @@ public class Post {
     @Column(name="view_count", nullable = false)
     private Long viewCount;
 
+
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -37,7 +43,10 @@ public class Post {
 
     public Post() {} // JPA는 알아서 채워넣기 전에 우선 빈 상태로 만든다. 필수
 
-    public Post(String title, String content) { // 글 추가 저장 시 우리의 편의성을 위해
+
+
+    public Post(String title, String content, Member author) { // 글 추가 저장 시 우리의 편의성을 위해
+        this.author = author;
         this.title = title;
         this.content = content;
         this.createdAt = LocalDateTime.now();
@@ -46,6 +55,10 @@ public class Post {
 
     public Long getId() {
         return id;
+    }
+
+    public Member getAuthor() {
+        return author;
     }
 
     public String getTitle() {

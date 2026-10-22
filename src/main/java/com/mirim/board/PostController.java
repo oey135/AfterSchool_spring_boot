@@ -2,12 +2,14 @@ package com.mirim.board;
 
 import com.mirim.board.dto.PostRequest;
 import com.mirim.board.dto.PostResponse;
+import com.mirim.board.login.SessionConst;
 import com.mirim.board.service.PostService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.channels.SeekableByteChannel;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,13 +63,13 @@ public class PostController {
     // @RequesBody : 요청 데이터 받아오기
     // createPost()처럼 무언가를 생성하는 코드의 경우, 201(created)로 응답받는 것이 좀 더 직관적
     @PostMapping// 브라우저에서는 get이외의 요청이 불가ㅜ
-    public ResponseEntity<?> createPost(@Valid @RequestBody PostRequest request) {
+    public ResponseEntity<?> createPost(@Valid @RequestBody PostRequest request, @SessionAttribute(name = SessionConst.LOGIN_MEMBER_ID) Long loginMemberId) {
         // Map은 논리적 오류를 잡기 힘들어서 실무에서는 클래스로 만들어 사용 -> 그렇기에 프론트와 협업하기 위해 API문서화가 필요한 것
         // 필수 키를 검사하지 않고 있음
         String title = request.getTitle();
         String content = (request.getContent());
 
-        PostResponse response = postService.createPost(title, content);
+        PostResponse response = postService.createPost(title, content, loginMemberId);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
