@@ -1,4 +1,4 @@
-package com.mirim.board;
+package com.mirim.board.controller;
 
 import com.mirim.board.dto.PostRequest;
 import com.mirim.board.dto.PostResponse;
@@ -9,11 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.nio.channels.SeekableByteChannel;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 // 근데 클래스는 인스턴스화 해야하잖아?? 근데 우린 안했어. 그럼 누가?? - 스프링부트가!
 
@@ -91,18 +87,10 @@ public class PostController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deletePosts(@PathVariable long id) {
-        if(id <= 0) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("게시글 번호는 1이상이어야 합니다.");
-        }
-
-        //db에서 삭제한다고 치고
-        boolean deleted = postService.deletePost(id);
-        if(!deleted) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 게시글입니다.");
-        }
-        // build : no_content 시 응답 바디 없을 때
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    public ResponseEntity<Void> deletePost(@PathVariable Long id,
+                                           @SessionAttribute(name = SessionConst.LOGIN_MEMBER_ID) Long loginMemberId) {
+        postService.deletePost(id, loginMemberId);
+        return ResponseEntity.noContent().build();
     }
 
 }
