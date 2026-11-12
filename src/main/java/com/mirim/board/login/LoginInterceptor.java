@@ -16,7 +16,10 @@ public class LoginInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         // 읽기는 로그인 상관없어~
-        if (request.getMethod().equals("GET") && request.getRequestURI().startsWith("/posts")) {}
+        if (request.getMethod().equals("GET") && request.getRequestURI().startsWith("/posts")) {
+            return true;
+        }
+
         // 세션이 없으면 만들지 마
         HttpSession session = request.getSession(false);
         if(session == null || session.getAttribute(SessionConst.LOGIN_MEMBER_ID) == null) {

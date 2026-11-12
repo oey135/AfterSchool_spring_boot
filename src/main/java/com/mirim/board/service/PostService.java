@@ -102,5 +102,4 @@ public class PostService {
         return responses;
     }
 
-
 }

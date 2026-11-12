@@ -22,6 +22,8 @@ public class PostController {
     // - required : 필수 여부 옵션, 기본값은 true
     private final PostService postService;
 
+
+
     public PostController(PostService postService) { // 왜 오류나나? postcontroller가 bin 파일이 필요한데, bin이 없으요
         this.postService = postService;
     }
