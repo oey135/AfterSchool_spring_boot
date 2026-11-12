@@ -5,10 +5,13 @@ import com.mirim.board.Notifier;
 import com.mirim.board.Post;
 import com.mirim.board.dto.PostResponse;
 import com.mirim.board.exception.ApiException;
+import com.mirim.board.repository.CommentRepository;
 import com.mirim.board.repository.MemberRepository;
 import com.mirim.board.repository.PostRepository;
+import com.mirim.board.repository.CommentRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,12 +21,14 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
+    private final CommentRepository commentRepository;
     private final Notifier notifier;
 
-    public PostService(PostRepository postRepository, Notifier notifier, MemberRepository memberRepository) { // 생성자 주입
+    public PostService(PostRepository postRepository, Notifier notifier, MemberRepository memberRepository, CommentRepository commentRepository) { // 생성자 주입
         this.postRepository = postRepository;
         this.memberRepository = memberRepository;
         this.notifier = notifier;
+        this.commentRepository = commentRepository;
     }
 
 
@@ -64,6 +69,7 @@ public class PostService {
         return PostResponse.from(post);
     }
 
+    @Transactional
     public void deletePost(Long id, Long loginMemberId) {
         Post post = postRepository.findById(id).orElse(null);
         if (post == null) {
@@ -72,6 +78,7 @@ public class PostService {
         if (!post.getAuthor().getId().equals(loginMemberId)) {
             throw new ApiException(HttpStatus.FORBIDDEN, "본인이 작성한 게시글만 삭제할 수 있습니다.");
         }
+        commentRepository.deleteAll(commentRepository.findByPostId(id));
         postRepository.delete(post);
     }
 
