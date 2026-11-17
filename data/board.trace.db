@@ -1036,3 +1036,9 @@ alter table posts add column view_count bigint default 0 not null [42121-240]
 	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:483)
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:74)
 	at java.base/java.lang.Thread.run(Thread.java:840)
+2026-11-17 19:25:53.633335+09:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "select * from [*]order by id desc limit 10 offset 0"; expected "identifier"; SQL statement:
+select * from order by id desc limit 10 offset 0 [42001-240]
+2026-11-17 19:25:55.560947+09:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "select * from [*]order by id desc limit 10 offset 0"; expected "identifier"; SQL statement:
+select * from order by id desc limit 10 offset 0 [42001-240]

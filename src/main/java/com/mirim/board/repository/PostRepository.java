@@ -1,6 +1,8 @@
 package com.mirim.board.repository;
 
 import com.mirim.board.Post;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -25,6 +27,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findByTitleContaining(String keyword);
 
     // jpql, 엔티티를 대상으로 하는 쿼리 jpa에게 명령
-    @Query("select p from Post p join fetch p.author")
-    List<Post> findAllWithAuthor();
+    @Query(value = "select p from Post p join fetch p.author",
+            countQuery = "select count(p) from Post p")
+    Page<Post> findAllWithAuthor(Pageable pageable); // pageable 몇개, 몇 개씩
 }

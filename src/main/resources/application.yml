@@ -1,20 +1,18 @@
 my :
   message: this is hello message.
 spring:
+  data:
+    web:
+      pageable:
+        max-page-size: 50
+  profiles:
+    active: dev
   datasource:
     url: jdbc:h2:file:./data/board;AUTO_SERVER=TRUE
     username: sa
     password:
     driver-class-name: org.h2.Driver
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
   jpa:
     hibernate:
       ddl-auto: validate # jpa가 테이블을 어떻게 다룰 지 옵션(validate : DB와 엔티티 일치 검사만)
-    show-sql: true # 살행된 쿼리를 콘솔에 출력해줌
-    properties:
-      hibernate:
-        format_sql: true # 들여쓰기 이쁘게 해서 보여준다.
 # jpa를 사용해 sql문을 수동으로 적지않아도 됌
